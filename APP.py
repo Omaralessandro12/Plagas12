@@ -43,7 +43,7 @@ Carimagen = None
 Carimagen = st.sidebar.file_uploader(
         "Elige una imagen...", type=("jpg", "jpeg", "png", 'bmp', 'webp'))
 
-   col1, col2 = st.columns(2)
+col1, col2 = st.columns(2)
 
 
    with col1:
