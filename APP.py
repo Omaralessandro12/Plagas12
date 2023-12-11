@@ -33,9 +33,9 @@ confidence = float(st.sidebar.slider(
 
 # Selecting Detection Or Segmentation
 if "YoloV8" in genres:
-    model_path = Path(settings.YOLOV8_MODEL)
-elif "ResNet50" in genres:
-    model_path = Path(settings.RESNET50_MODEL)
+    model_path = Path(settings.DETECTION_MODEL)
+#elif "ResNet50" in genres:
+#  model_path = Path(settings.RESNET50_MODEL)
 else:
     st.error("Seleccione al menos un modelo.")
 
