@@ -60,5 +60,3 @@ with col2:
                     st.write(box.data)
         except Exception as ex:
             st.write("¡Aún no se ha subido ninguna imagen!")
-
-                    st.write("¡Aún no se ha subido ninguna imagen!")
