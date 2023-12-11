@@ -46,13 +46,13 @@ Carimagen = st.sidebar.file_uploader(
 col1, col2 = st.columns(2)
 
 
-with col1:
+ with col1:
         try:
             if Carimagen:
                 uploaded_image = PIL.Image.open(Carimagen)
                 st.image(Carimagen, caption="Imagen Cargada",use_column_width=True)
 
-with col2:        
+ with col2:        
             if st.sidebar.button('DETECTAR PLAGA'):
                 res = model.predict(uploaded_image,
                                     conf=confidence
