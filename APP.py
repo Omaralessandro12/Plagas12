@@ -46,7 +46,7 @@ Carimagen = st.sidebar.file_uploader(
 col1, col2 = st.columns(2)
 
 
-   with col1:
+  with col1:
         try:
             if Carimagen:
                 uploaded_image = PIL.Image.open(Carimagen)
@@ -67,10 +67,4 @@ col1, col2 = st.columns(2)
                             st.write(box.data)
                 except Exception as ex:
                     # st.write(ex)
-                    st.write("No image is uploaded yet!")
-
-
-
-
-# st.sidebar.button('DETECTAR PLAGA')
-
+                    st.write("¡Aún no se ha subido ninguna imagen!")
