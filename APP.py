@@ -17,33 +17,19 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Main page heading
-# st.title("Deteccion de Plagas en la agricultura Mexicana")
-# st.caption('Updload a photo with this :blue[hand signals]: :+1:, :hand:, :i_love_you_hand_sign:, and :spock-hand:.')
-# st.caption('Then click the :blue[Detect Objects] button and check the result.')
-
 # Sidebar
 st.sidebar.header("Configuración del modelo de aprendizaje automático")
 
 model_types_available = ['Deteccion', 'OtraTarea', 'OtraTarea2']  # Agrega más tareas según sea necesario
 model_type = st.sidebar.multiselect("Seleccionar tarea", model_types_available, default=['Deteccion'])
 
+if not model_type:
+    model_type = ['Deteccion']
 
+selected_task = model_type[0]
 
-
-# Model Options
-#model_type = st.sidebar.radio(
-#    "Seleccionar tarea", ['Deteccion' ])
-
-
-confidence = float(st.sidebar.slider(
-    "Seleccione la confianza del modelo", 25, 100, 40)) / 100
-
-# Selecting Detection Or Segmentation
-if model_type == 'Deteccion':
+if selected_task == 'Deteccion':
     model_path = Path(settings.DETECTION_MODEL)
-#elif model_type == 'Segmentation':
-#    model_path = Path(settings.SEGMENTATION_MODEL)
 
 # Load Pre-trained ML Model
 try:
@@ -58,7 +44,7 @@ source_radio = st.sidebar.radio(
 
 source_img = None
 # If image is selected
-if source_radio == settings.IMAGE:
+# if source_radio == settings.IMAGE:
     source_img = st.sidebar.file_uploader(
         "Elige una imagen...", type=("jpg", "jpeg", "png", 'bmp', 'webp'))
 
@@ -93,9 +79,6 @@ if source_radio == settings.IMAGE:
 
 #elif source_radio == settings.VIDEO:
 #    helper.play_stored_video(confidence, model)
-
-elif source_radio == settings.WEBCAM:
-    helper.play_webcam(confidence, model)
 
 #elif source_radio == settings.YOUTUBE:
 #   helper.play_youtube_video(confidence, model)
