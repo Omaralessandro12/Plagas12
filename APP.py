@@ -38,10 +38,6 @@ except Exception as ex:
     st.error(f"Unable to load model. Check the specified path: {model_path}")
     st.error(ex)
 
-st.sidebar.header("Imagen/Config")
-source_radio = st.sidebar.radio(
-    "Seleccione Fuente", settings.SOURCES_LIST)
-
 source_img = None
 # If image is selected
 # if source_radio == settings.IMAGE:
@@ -77,11 +73,6 @@ source_img = None
                     # st.write(ex)
                     st.write("No image is uploaded yet!")
 
-#elif source_radio == settings.VIDEO:
-#    helper.play_stored_video(confidence, model)
-
-#elif source_radio == settings.YOUTUBE:
-#   helper.play_youtube_video(confidence, model)
 
 else:
     st.error("Please select a valid source type!")
