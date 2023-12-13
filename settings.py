@@ -15,29 +15,21 @@ if root_path not in sys.path:
 ROOT = root_path.relative_to(Path.cwd())
 
 # Sources
-IMAGE = 'Imagen'
+#IMAGE = 'Imagen'
 #VIDEO = 'Video'
-WEBCAM = 'Camara'
+#WEBCAM = 'Camara'
 #YOUTUBE = 'YouTube'
 
-SOURCES_LIST = [IMAGE, WEBCAM ]
+#SOURCES_LIST = [IMAGE, WEBCAM ]
 
 # Images config
 IMAGES_DIR = ROOT / 'images'
 DEFAULT_IMAGE = IMAGES_DIR / 'office_4.jpg'
 DEFAULT_DETECT_IMAGE = IMAGES_DIR / 'office_4_detected.jpg'
 
-# Videos config
-VIDEO_DIR = ROOT / 'videos'
-VIDEO_1_PATH = VIDEO_DIR / 'video_1.mp4'
-VIDEOS_DICT = {
-    'video_1': VIDEO_1_PATH
-}
 
 # ML Model config
-MODEL_DIR = ROOT / 'weights'
+MODEL_DIR = ROOT / 'carpeta'
 DETECTION_MODEL = MODEL_DIR / 'best.pt'
 SEGMENTATION_MODEL = MODEL_DIR / 'yolov8n-seg.pt'
 
-# Webcam
-WEBCAM_PATH = 0
