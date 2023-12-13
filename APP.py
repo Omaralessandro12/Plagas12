@@ -39,7 +39,7 @@ except Exception as ex:
     st.error(ex)
 
 source_img = None
-  if image is selected
+if image is selected
   if source_radio == settings.IMAGE:
     source_img = st.sidebar.file_uploader(
         "Elige una imagen...", type=("jpg", "jpeg", "png", 'bmp', 'webp'))
