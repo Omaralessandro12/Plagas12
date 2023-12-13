@@ -23,7 +23,7 @@ ROOT = root_path.relative_to(Path.cwd())
 #SOURCES_LIST = [IMAGE, WEBCAM ]
 
 # Images config
-IMAGES_DIR = ROOT / 'images'
+IMAGES_DIR = ROOT / 'weights'  
 DEFAULT_IMAGE = IMAGES_DIR / 'office_4.jpg'
 DEFAULT_DETECT_IMAGE = IMAGES_DIR / 'office_4_detected.jpg'
 
