@@ -1,68 +1,108 @@
-from ultralytics import YOLO
+# Python In-built packages
+from pathlib import Path
+import PIL
+
+# External packages
 import streamlit as st
-from streamlit_webrtc import WebRtcMode, webrtc_streamer, VideoTransformerBase
-from turn import get_ice_servers
 
-import numpy as np
-from PIL import Image
-import av
-import cv2
-from pytube import YouTube
-
+# Local Modules
 import settings
+import helper
+
+# Setting page layout
+st.set_page_config(
+    page_title="Deteccion de Plagas en la agricultura Mexicana",
+    # page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 
-def load_model(model_path):
-    """
-    Loads a YOLO object detection model from the specified model_path.
+# Sidebar
+st.sidebar.header("Configuración del modelo de aprendizaje automático")
 
-    Parameters:
-        model_path (str): The path to the YOLO model file.
-
-    Returns:
-        A YOLO object detection model.
-    """
-    model = YOLO(model_path)
-    return model
+# Model Options
+model_types_available = ['Deteccion', 'OtraTarea', 'OtraTarea2']  # Agrega más tareas según sea necesario
+model_type = st.sidebar.multiselect("Seleccionar tarea", model_types_available, default=['Deteccion'])
 
 
-def display_tracker_options():
-    display_tracker = st.radio("Display Tracker", ('Yes', 'No'))
-    is_display_tracker = True if display_tracker == 'Yes' else False
-    if is_display_tracker:
-        tracker_type = st.radio("Tracker", ("bytetrack.yaml", "botsort.yaml"))
-        return is_display_tracker, tracker_type
-    return is_display_tracker, None
 
-def _display_detected_frames(conf, model, st_frame, image, is_display_tracking=None, tracker=None):
-    """
-    Display the detected objects on a video frame using the YOLOv8 model.
+#model_type = st.sidebar.radio(
+#    "Seleccionar tarea", ['Deteccion' ])
 
-    Args:
-    - conf (float): Confidence threshold for object detection.
-    - model (YoloV8): A YOLOv8 object detection model.
-    - st_frame (Streamlit object): A Streamlit object to display the detected video.
-    - image (numpy array): A numpy array representing the video frame.
-    - is_display_tracking (bool): A flag indicating whether to display object tracking (default=None).
 
-    Returns:
-    None
-    """
+confidence = float(st.sidebar.slider(
+    "Seleccione la confianza del modelo", 25, 100, 40)) / 100
 
-    # Resize the image to a standard size
-    image = cv2.resize(image, (720, int(720*(9/16))))
 
-    # Display object tracking, if specified
-    if is_display_tracking:
-        res = model.track(image, conf=conf, persist=True, tracker=tracker)
-    else:
-        # Predict the objects in the image using the YOLOv8 model
-        res = model.predict(image, conf=conf)
+if not model_type:
+    model_type = ['Deteccion']
 
-    # # Plot the detected objects on the video frame
-    res_plotted = res[0].plot()
-    st_frame.image(res_plotted,
-                   caption='Detected Video',
-                   channels="BGR",
-                   use_column_width=True
-                   )
+selected_task = model_type[0]
+
+if selected_task == 'Deteccion':
+    model_path = Path(settings.DETECTION_MODEL)
+
+# Selecting Detection Or Segmentation
+#if model_type == 'Deteccion':
+#   model_path = Path(settings.DETECTION_MODEL)
+#elif model_type == 'Segmentation':
+#    model_path = Path(settings.SEGMENTATION_MODEL)
+
+# Load Pre-trained ML Model
+try:
+    model = helper.load_model(model_path)
+except Exception as ex:
+    st.error(f"Unable to load model. Check the specified path: {model_path}")
+    st.error(ex)
+
+st.sidebar.header("Imagen/Config")
+source_radio = st.sidebar.radio(
+    "Seleccione Fuente", settings.SOURCES_LIST)
+
+source_img = None
+# If image is selected
+if source_radio == settings.IMAGE:
+    source_img = st.sidebar.file_uploader(
+        "Elige una imagen...", type=("jpg", "jpeg", "png", 'bmp', 'webp'))
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        try:
+            if source_img:
+                uploaded_image = PIL.Image.open(source_img)
+                st.image(source_img, caption="Imagen Cargada",
+                         use_column_width=True)
+        except Exception as ex:
+            st.error("Se produjo un error al abrir la imagen.")
+            st.error(ex)
+
+    with col2:        
+            if st.sidebar.button('Detectar Objeto'):
+                res = model.predict(uploaded_image,
+                                    conf=confidence
+                                    )
+                boxes = res[0].boxes
+                res_plotted = res[0].plot()[:, :, ::-1]
+                st.image(res_plotted, caption='Detected Image',
+                         use_column_width=True)
+                try:
+                    with st.expander("Resultados de la detección"):
+                        for box in boxes:
+                            st.write(box.data)
+                except Exception as ex:
+                    # st.write(ex)
+                    st.write("No image is uploaded yet!")
+
+#elif source_radio == settings.VIDEO:
+#    helper.play_stored_video(confidence, model)
+
+elif source_radio == settings.WEBCAM:
+    helper.play_webcam(confidence, model)
+
+#elif source_radio == settings.YOUTUBE:
+#   helper.play_youtube_video(confidence, model)
+
+else:
+    st.error("Please select a valid source type!")
